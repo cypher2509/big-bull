@@ -1,7 +1,7 @@
 import { validateHeaderValue } from 'http';
+import jwt from 'jsonwebtoken';
 import {getDb,closeDBConnection} from './db.mjs'
 import { getPrice } from './market.mjs';
-
 
 let database = await getDb();
 const adminPasskey ="WolfOfWallstreet"
@@ -40,11 +40,15 @@ export async function newGame(req,res){
 }
 
 export async function provideCash(req,res){
+    let passkey = req.body.passkey;
     let gameId = req.body.gameId;
     let cash = req.body.cash;
 
     let db;
 
+    if(passkey!= adminPasskey){
+        return res.status(400).json({data:'you are not authorised. Ask the developer for the admin password'})
+    }
     let collections = (await database.listCollections().toArray());
     for (var i of collections){
         if (i.name == gameId){
@@ -74,7 +78,13 @@ export async function provideCash(req,res){
 
 export async function getPortfolio(req,res){
     let db;
-    let gameId = req.body.gameId;
+    let token = req.cookies.token;
+    if(!token){
+        token =await req.headers.authorization;
+        token = await token.split(" ")[1]; 
+    }
+    const decodedToken = jwt.verify(token, "bullrun");
+    let gameId = decodedToken.gameId;
     let collections = (await database.listCollections().toArray());
     for (var i of collections){
         if (i.name == gameId){
@@ -86,13 +96,12 @@ export async function getPortfolio(req,res){
     }
     let players = await db.find({}).toArray();
     let playersNetValue = [];
+    
     for(var i of players){
 
         let userName = await i.userName;
-        let portfolioValue = 0;
-        
-//updating the portfolio value.
-        
+        let portfolioValue = 0; 
+            //updating the portfolio value. 
         if(i.portfolio!=null){
             for(var j of i.portfolio){
                 let symbol =await  j.symbol
@@ -100,23 +109,25 @@ export async function getPortfolio(req,res){
                 let lotValue = await (currPrice * j.quantity)
                 portfolioValue = portfolioValue + lotValue;
             }
-        }
-        
         db.updateOne({userName:userName},{$set:{portfolioValue:portfolioValue}})
         playersNetValue.push({userName:userName,portfolioValue:portfolioValue});
-
+        }
     }
     res.status(200).json(playersNetValue)
 }
 
 export async function declareWinner(req,res){
-    let gameId = req.query.gameId;
+    let passkey = req.body.passkey
+    let gameId = req.body.gameId;
     let db;
     let collections = (await database.listCollections().toArray());
     for (var i of collections){
         if (i.name == gameId){
            db = await database.collection(gameId);
         }
+    }
+    if(passkey!= adminPasskey){
+        return res.status(400).json({data:'you are not authorised. Ask the developer for the admin password'})
     }
     if(!db){
         return res.status(400).json("Invalid gameId.")
@@ -160,6 +171,7 @@ export async function declareWinner(req,res){
     }
     catch(err){
         console.log(err)
+        return res.status(400).json(err);
     }
     return res.status(200).json(winner)
 }

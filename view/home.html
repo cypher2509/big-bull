@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="./home.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+    <title>Home</title>
+</head>
+<body>
+    <div class="nav">
+        <div>
+            <button class="tablinks">Home</button>
+            <button class="tablinks" >Trade</button>
+            <button class="tablinks">Leaderboard</button>
+        </div>
+        <div class="tablinks" id="username">Lokesh Panchal</div>
+    </div>
+  <div id="container">
+    <div id="home-tab" class="tabcontent">
+      <div class="accountInfo">
+        <div id="value-tab">$6000</div>
+        <span id="text1">Available to trade:<span>
+        <span class="balance" id="balance-tab">$5000</span>
+        <table class="table">
+          <thead>
+                <tr>
+                  <th scope="col">Symbol</th>
+                  <th scope="col">Average buying price</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Current price</th>
+                  <th scope="col">Total value</th>
+                  <th scope="col">Profit/Loss</th>
+
+                </tr>
+              </thead>
+              <tbody id = "table-body">
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+              </tbody>
+          </table>
+      </div>
+      
+      <div id="history">
+        <h3>Trading history</h3>
+        <hr style="margin:1rem 10px 0 10px;">
+        <table class="table">
+          <thead><tr>
+            <th scope="col">Call</th>
+            <th scope="col">Symbol</th>
+            <th scope="col">Rate</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Cost</th>
+            <th scope="col">Time</th>
+          </tr></thead>
+          <tbody id="history-table">
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+                
+              </table>
+            </div>
+    </div>
+    
+  </div>
+  
+<!-- trade body     -->
+
+    <div id="trade-tab" class="tabcontent">
+       <div id="trading">
+          <input type="text" id="stockSymbol" placeholder="Enter Stock Symbol">
+          <input type="text" id="stockQuantity" placeholder="Quantity" disabled>
+          <div id="stockCost"></div>
+          <textbox id="amount"></textbox>
+          <div class="balance"></div>
+          <button id="sell-btn">Sell</button>
+          <button id="buy-btn">Buy</button>
+          <div id="tradeAccomplished"></div>
+       </div>
+    </div>
+
+
+    <div id="leaderboard-tab" class="tabcontent">
+      <div id="leaderboard">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Rank</th>
+              <th scope="col">UserName</th>
+              <th scope="col">Portfolio value</th>
+            </tr>
+          </thead>
+          <tbody id = "board-body">
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+     
+    <script src="./js/home.js"></script>
+</body>
+</html>
+

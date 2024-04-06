@@ -1,7 +1,7 @@
 import axios from "axios";
 import exp from "constants";
 const get = axios.get;
-let key = "90bbccba7a0f440eada9119f0da6688a"
+let key = "daadbeb4409041009b67662fe5c505f7"
 let url = "https://api.twelvedata.com/";
    
 
@@ -46,9 +46,20 @@ export async function getPrice(stockName){
     catch(err){
         console.log(err)
     }
-   
+}
 
-
+export async function getStockPrice(req,res){
+    let stockName = req.body.symbol;
+    console.log(stockName)
+    try{
+        let route= "price";
+        let response = await get(url+route+"?symbol="+stockName+"&apikey="+key);
+        console.log(response.data.price)
+        return res.status(200).json(response.data.price)
+    }
+    catch(err){
+        console.log(err)
+    }
 }
 
 export async function isValidSymbol(symbol){

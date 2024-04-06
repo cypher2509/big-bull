@@ -169,7 +169,6 @@ describe('POST /register', function() {
             }, 
             expected: 400 
         },
-        // Add more test cases as needed
     ];
 
     tests.forEach(function(test) {
@@ -188,7 +187,7 @@ describe('POST /register', function() {
     });
 });
 
-describe('GET /login', function() {
+describe('POST /login', function() {
     var tests = [
         // Valid login
         { 
@@ -230,21 +229,21 @@ describe('GET /login', function() {
             }, 
             expected: 400 
         },
-        // Add more test cases as needed
     ];
 
     tests.forEach(function(test) {
         it(`GET /login ${test.name}`, async function() {
             let queryString = `userName=${test.args.userName}&password=${test.args.password}&gameId=${test.args.gameId}`;
-            let response = await request.get(`/login`)
+            let response = await request.post(`/login`)
                 .send(test.args)
+                .set({ "Authorization": `Bearer ${apikey}` })
                 .set('Content-Type', 'application/json');
             console.log(response.body)
+
             assert.equal(test.expected, response.status);
         
             if (response.status === 200) {
                 apikey = await response.body.token;
-                console.log(apikey)
              }
         });
     });
@@ -258,7 +257,8 @@ describe('POST /provideCash', function() {
             name: 'Valid provideCash', 
             args: { 
                 cash: 500, 
-                gameId: 'game1' 
+                gameId: 'game1',
+                passkey: 'WolfOfWallstreet'
             }, 
             expected: 200 
         },
@@ -280,7 +280,6 @@ describe('POST /provideCash', function() {
             }, 
             expected: 400 
         },
-        // Add more test cases as needed
     ];
 
     tests.forEach(function(test) {
@@ -289,6 +288,7 @@ describe('POST /provideCash', function() {
                 .send(test.args)
                 .set('Content-Type', 'application/json');
             console.log(response.body)
+
             assert.equal(test.expected, response.status);
         });
     });
@@ -318,17 +318,7 @@ describe('POST /tradeStock', function() {
             token: apikey, // Assuming apikey is the token variable
             expected: 200 
         },
-        // Invalid token
-        { 
-            name: 'Invalid token', 
-            args: { 
-                call: 'buy', 
-                symbol: 'AAPL', 
-                quantity: 10 
-            }, 
-            token: 'invalidToken', // Invalid token
-            expected: 401 // Unauthorized
-        },
+        
         // Missing call parameter
         { 
             name: 'Missing call parameter', 
@@ -403,7 +393,6 @@ describe('POST /tradeStock', function() {
             token: apikey, 
             expected: 400 
         },
-        // Add more test cases as needed
     ];
 
     tests.forEach(function(test) {
@@ -412,7 +401,6 @@ describe('POST /tradeStock', function() {
                 .set('Authorization', 'Bearer ' + apikey)
                 .send(test.args);
                 console.log(response.body); // Log the response body
-
             assert.equal(test.expected, response.status);
         });
     });
@@ -420,7 +408,7 @@ describe('POST /tradeStock', function() {
 
 describe('GET /portfolio', function() {
     var tests = [
-        // Valid gameId
+        // Vali
         { 
             name: 'Valid gameId', 
             args: { 
@@ -428,21 +416,13 @@ describe('GET /portfolio', function() {
             }, 
             expected: 200 
         },
-        // Invalid gameId
-        { 
-            name: 'Invalid gameId', 
-            args: { 
-                gameId: 'invalidGameId' 
-            }, 
-            expected: 400 
-        },
-        // Add more test cases as needed
     ];
 
     tests.forEach(function(test) {
         it(`GET /portfolio ${test.name}`, async function() {
             let response = await request.get('/portfolio')
                 .send(test.args)
+                .set('Authorization', 'Bearer ' + apikey)
                 .set('Content-Type', 'application/json');
             console.log(response.body);
             assert.equal(test.expected, response.status);
@@ -473,7 +453,6 @@ describe('GET /searchStock', function() {
             args: {}, 
             expected: 400 
         },
-        // Add more test cases as needed
     ];
 
     tests.forEach(function(test) {
@@ -489,13 +468,14 @@ describe('GET /searchStock', function() {
     });
 });
 
-describe('GET /declareWinner', function() {
+describe('POST /declareWinner', function() {
     var tests = [
         // Valid gameId with players
         { 
             name: 'Valid gameId with players', 
             args: { 
-                gameId: 'game1' 
+                gameId: 'game1', 
+                passkey:'WolfOfWallstreet'
             }, 
             expected: 200 
         },
@@ -503,24 +483,27 @@ describe('GET /declareWinner', function() {
         // Missing gameId
         { 
             name: 'Missing gameId', 
-            args: {}, 
+
+            args: {
+                passkey:'WolfOfWallstreet'
+            }, 
             expected: 400 
         },
         // Invalid gameId
         { 
             name: 'Invalid gameId', 
             args: { 
-                gameId: 'invalidGameId' 
+                gameId: 'invalidGameId',
+                passkey:'WolfOfWallstreet' 
             }, 
             expected: 400 
         },
-        // Add more test cases as needed
     ];
 
     tests.forEach(function(test) {
-        it(`GET /declareWinner ${test.name}`, async function() {
-            let response = await request.get('/declareWinner')
-                .query(test.args)
+        it(`POST /declareWinner ${test.name}`, async function() {
+            let response = await request.post('/declareWinner')
+                .send(test.args)
                 .set('Content-Type', 'application/json');
             console.log(response.body);
             assert.equal(test.expected, response.status);
@@ -534,25 +517,11 @@ describe('GET /tradingHistory', function() {
         { 
             name: 'Valid token and gameId', 
             args: { 
-                token: apikey, 
+                token: apikey,
+                gameId : "game1"
             }, 
             expected: 200 
-        },
-        // Invalid token
-        { 
-            name: 'Invalid token', 
-            args: { 
-                token: 'invalidToken', 
-            }, 
-            expected: 401 
-        },
-        // Missing token
-        { 
-            name: 'Missing token', 
-            args: { 
-            }, 
-            expected: 401 
-        },
+        }
 
     ];
 

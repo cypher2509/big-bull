@@ -2,20 +2,26 @@ import jwt from 'jsonwebtoken';
 
 export function verifyToken(req, res, next) {
     try {
-    let token = req.headers.authorization;
-    if (token) {
-        token = token.split(" ")[1];
-        let decoded = jwt.verify(token, 'bullrun');
-        req.user = decoded.user;
+    let token = req.cookies.token;
+    if(!token){
+        console.log("token not in cookie");
+        token = req.headers.authorization;
+        token = token.split(" ")[1]; 
+        console.log("token from header: "+token);   
+    }
+    if(!token){
+        res.status(401).json({ error: 'Access denied' });
+    }
+    let decoded = jwt.verify(token, 'bullrun');
+    req.user = decoded.user;
         req.gameId = decoded.gameId;
         
         next();
     }
-    else{
-        res.status(401).json({ error: 'Access denied' });
-    }
     
-    } catch (error) {
+    
+     catch (error) {
+        console.log(error)
         res.status(401).json({ error: 'Invalid token' });
     }
     };

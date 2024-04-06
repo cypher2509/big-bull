@@ -1,0 +1,63 @@
+body{
+    font-family: "Dosis", sans-serif;
+    background-image: url("login.png");
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+#bigBull{
+    padding: 40px;
+    text-align: center;
+}
+#container{
+    background-color: #d3d9c3;
+    height: 600px;
+    width: 500px;
+    position: relative;
+    top: 100px;
+    border:solid 5px;
+    border-color: #576e55;
+    border-radius: 10px;
+}
+
+form{
+    text-align: center;
+    height: 60%;
+    display: flex;
+    flex-direction: column;
+    margin: 30px 50px;
+}
+
+input{
+    border-radius: 0.6rem;
+    transition: 0.4s;
+}
+input:focus{
+    font-size: 24px;
+    box-shadow: 4px 4px 4px black;
+}
+#login-btn{
+    background-color: #85917b;
+    color: #1a261e;
+    border: solid 2px #576e55;
+    border-radius: 0.6rem;
+    font-size: 20px;
+    transition: 0.5s;
+}
+#login-btn:hover{
+    background-color: white;
+    color: #223e27;
+}
+
+#register-btn{
+    padding-top: 30px;
+    background-color: transparent;
+    border: none;
+    color: blue;
+    transition: 2s;
+}
+#register-btn:hover{
+    text-decoration: underline;
+}

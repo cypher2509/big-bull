@@ -9,6 +9,8 @@ export async function tradeStock(req,res){
     let call = req.body.call;
     let symbol = req.body.symbol;
     let quantity = req.body.quantity;
+    let tradeQuantity = quantity;
+    console.log(call,symbol)
     try{
  
     // Check if call is valid
@@ -27,12 +29,17 @@ export async function tradeStock(req,res){
     }
   //Authorization: 'Bearer TOKEN'
         
-        let token = req.headers.authorization;
-        token =token.split(" ")[1];
+        let token = req.cookies.token;
+        if(!token){
+            token =await req.headers.authorization;
+            token = await token.split(" ")[1]; 
+        }
         const decodedToken = jwt.verify(token, "bullrun");
         let userName =decodedToken.userName;
         let gameId = decodedToken.gameId;
     // geting real time stock price.
+        symbol = String(symbol).toUpperCase();
+
         var db = await database.collection(gameId);
         let rate = await getPrice(symbol);
         let cost = await rate*quantity;
@@ -67,7 +74,7 @@ export async function tradeStock(req,res){
             let currValue = await (portfolioValue)+ cost;
 
             if(prevBalance<cost || !prevBalance){
-                return res.status(200).json("insufficient funds. balance: "+ prevBalance)
+                return res.status(400).json("insufficient funds. balance: "+ prevBalance)
             }
 
         //updating the trading history.
@@ -80,9 +87,9 @@ export async function tradeStock(req,res){
             if(await stockInPortfolio){
                 for(var i of await portfolio){
                     if (i.symbol== symbol){
-                        quantity = parseInt(i.quantity) + parseInt(quantity);
+                        quantity =await (await parseInt(i.quantity) +await  parseInt(quantity));
                         var bookValue = cost+ i.bookValue
-                        var average = bookValue/quantity;
+                        var average = await (bookValue/quantity);
                         break;
                     }
                     
@@ -90,7 +97,7 @@ export async function tradeStock(req,res){
 
 
                 portfolio.splice(positionOfStock,1)
-                portfolio.push({symbol:symbol,avgPrice:await average,quantity:quantity, bookValue:bookValue})
+                portfolio.push({symbol:symbol,avgPrice:await average.toFixed(2),quantity:quantity, bookValue:bookValue})
 
                 
                 db.updateOne({userName:userName},{$set:{portfolio: portfolio, balance:await currBalance, portfolioValue:await currValue}})
@@ -117,14 +124,14 @@ export async function tradeStock(req,res){
                     }
                 }
                 if (quantity<0){
-                    return res.status(200).json("insufficient quantity.")
+                    return res.status(400).json("insufficient quantity.")
                 }
                 let currBalance = await (prevBalance+cost)
                 let currValue = await (portfolioValue - cost);
 
                 const currentDate = new Date(); 
                 let tradingHistory = playerInfo.tradingHistory
-                tradingHistory.push({call: call, symbol:symbol, rate: rate, quantity: quantity,cost: cost, time:currentDate })
+                tradingHistory.push({call: call, symbol:symbol, rate: rate, quantity: tradeQuantity,cost: cost, time:currentDate })
                 db.updateOne({userName:userName},{$set:{tradingHistory:tradingHistory}})
 
                 portfolio.splice(positionOfStock,1)
@@ -136,7 +143,7 @@ export async function tradeStock(req,res){
                 res.status(200).json(portfolio);
             }
             else{
-                res.status(200).json("You dont have any stocks for company.")
+                res.status(400).json("You dont have any stocks for company.")
             }
         }    
     }
@@ -149,8 +156,14 @@ export async function tradeStock(req,res){
 
 export async function tradingHistory(req,res){
      //Authorization: 'Bearer TOKEN'
-     let token = req.headers.authorization;
-     token =token.split(" ")[1];
+     let token = req.cookies.token;
+     if(!token){
+        console.log("token not in cookie");
+        token =await req.headers.authorization;
+        token = await token.split(" ")[1]; 
+        console.log("token from header in tradeHistory: "+ token);      
+    }
+    console.log("token from th           "+token)
      const decodedToken = jwt.verify(token, "bullrun");
      let userName =decodedToken.userName;
      let gameId = decodedToken.gameId;
@@ -159,6 +172,29 @@ export async function tradingHistory(req,res){
     let player = await db.find({userName:userName}).toArray()
     player =await player[0]
      let history = player.tradingHistory
-     res.status(200).json({Tradinghistory: history})
+     res.status(200).json(history)
     
+}
+
+export async function playerPortfolio(req,res){
+    let token = req.cookies.token;
+    const decodedToken = jwt.verify(token, "bullrun");
+    let userName =decodedToken.userName;
+    let gameId = decodedToken.gameId;
+    var db = await database.collection(gameId)
+// getting details from the database
+    let playerInfo =await db.find({userName:userName}).toArray();
+    let playerPort = await playerInfo[0].portfolio;
+    for (let i of playerPort) {
+        let symbol = i.symbol;
+        let currRate = await getPrice(symbol);
+        let currValue = currRate * i.quantity; // Remove unnecessary await
+
+        // Set properties dynamically based on the loop iteration
+        i["currRate"] = currRate;
+        i["currValue"] = currValue;
+        i["pl"] = (currValue - parseInt(i.bookValue)).toFixed(2);
+    }
+    playerInfo.portfolio = playerPort;
+    return res.status(200).json(playerInfo)
 }

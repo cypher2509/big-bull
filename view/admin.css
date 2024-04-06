@@ -1,0 +1,36 @@
+body{
+    background-image: url("./login.png");
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.container{
+    background-color: rgba(39, 42, 44, 0.439);
+    display: flex;
+
+}
+
+#newGame{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30vw;
+    height: 60vh;
+    padding: 10px;
+}
+#provideCash{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30vw;
+    height: 60vh;
+    padding: 10px;
+}
+#declareWinner{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 30vw;
+    height: 60vh;
+    padding: 10px;
+}

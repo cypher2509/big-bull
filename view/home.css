@@ -1,0 +1,103 @@
+*{
+    margin: 0;
+    padding: 0;
+    
+}
+#container{
+    display: flex;
+    justify-content: center;
+
+}
+#trading{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    left: 10rem;
+    border: solid black 2px;
+    padding: 15rem 20rem 15rem 20rem;
+}
+#amount{
+    border: solid black 2px;
+}
+#stockCost{
+    border: solid black 2px;
+}
+#username{
+    padding-right: 3rem;
+    font-size: 28px;
+}
+.tablinks{
+    background-color: transparent;
+    border: none;
+    padding: 1rem;
+    color: aliceblue;
+    font-size: 20px;
+}
+.nav{
+    background-color: #404a63;
+    position: sticky;
+    height: 4rem;
+    width: 100vw;
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+}
+#value-tab{
+    margin-top:4rem;
+    margin-left: 3rem;
+    font-size: 60px;
+    line-height: 60px;
+}
+#text1{
+    margin-left: 3rem;
+}
+#balance-tab{
+    font-size: 20px;
+}
+#home-tab{
+    width: 95vw;
+    display: flex;
+    justify-content: space-between;
+
+}
+.accountInfo{
+    width: 60vw;
+    height: 70vh;
+    border: solid black 2px;
+    border-radius: 0.7rem;
+    margin: 3rem 0 2rem 3rem;
+}
+h3{
+    padding-top:2rem;
+    text-align: center;
+}
+#history{
+    margin: 3rem 0 2rem 3rem;
+    border: solid black 2px;
+    border-radius: 0.7rem;
+}
+#trade-tab{
+    display: none;
+}
+
+#leaderboard-tab{
+    display: none;
+}
+
+.table{
+    margin-top: 2rem;
+    width: 400px;
+}
+#leaderboard-tab{
+    display: none;
+}
+
+#leaderboard{
+    width: 60vw;
+    height: 80vh;
+}
+
+#trade-tab{
+    display: none;
+    
+}

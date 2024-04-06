@@ -49,13 +49,7 @@ export async function register(req,res){
 
 
 //dob verification
-    var dobPattern = /^(0[1-9]|[1-2][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}$/
-    var matchedDob = dobPattern.exec(dob)
-
-    if(!matchedDob){
-        return res.status(400).json("Please enter Date of birth in DD-MM-YYYY format.")
-    }
-
+   
     if(!dob){
         return await res.status(400).json("Please enter your Date of Birth.")
     }
@@ -99,6 +93,7 @@ let startingCash = await parseInt(gameSettings[0].startingCash);
     await db.insertOne(loginDetails);
 
     const token = jwt.sign({ userName: userName , gameId: gameId}, 'bullrun',{expiresIn: '1h'});
+    res.cookie("token", token);
     return res.status(200).json({ token :token , message : 'Account created.'});
 
  
@@ -109,7 +104,6 @@ export async function login(req,res){
     let userName = req.body.userName;
     let password = req.body.password;
     let gameId = req.body.gameId;
-
     var db;
 
     let collections = (await database.listCollections().toArray());
@@ -131,13 +125,14 @@ export async function login(req,res){
 
     if(account[0].password== password){
         const token = jwt.sign({ userName: userName ,gameId: gameId}, 'bullrun',{expiresIn: '1h'});
+        
+        res.cookie("token", token);
         res.status(200).json({ token :token , message: 'login successful.'});
     }
     else{
         return res.status(400).json("Invalid password.")
 
     }
-
     
 
 }

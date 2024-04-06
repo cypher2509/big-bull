@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="admin.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>Admin Page</title>
+</head>
+<body>
+    <div class="container">
+        <div id="newGame">
+            <input type="text" id="gameName" placeholder="gameId">
+            <input type="text" id="passkeyGame" placeholder="Admin key">
+            <input type="text" id="startingCash" placeholder="Starting Cash">
+            <button id="createGame-btn">Create Game</button>
+            <output id="gameResponse"></output>
+        </div>
+        <div id="provideCash">
+            <input type="text" id="cashGameName" placeholder="gameId">
+            <input type="text" id="cash" placeholder="Cash Amount">
+            <input type="text" id="passkeyCash" placeholder="Admin key">
+            <button id="provideCash-btn">Provide Cash</button>
+            <output id="cashResponse"></output>
+        </div>
+        <div id="declareWinner">
+            <input type="text" id="gameId" placeholder="GameId">
+            <input type="text" id="passkeyWinner" placeholder="Admin key">
+            <button id="declareWinner-btn">Declare winner</button>
+            <output id="winner"></output>
+        </div>
+    </div>
+<script src="./js/admin.js"></script></body>
+</html>
