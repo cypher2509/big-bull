@@ -7,6 +7,7 @@ import { connectToDb, getDb } from './db.mjs'
 import { newGame, provideCash, getPortfolio,declareWinner } from './gameServer.mjs'
 import { tradeStock,tradingHistory, playerPortfolio } from './game.mjs';
 import { getStockPrice, searchStock } from './market.mjs';
+import {editWatchlist, getWatchlist} from './watchlist.mjs';
 import { verifyToken } from './middleware/authMiddleware.mjs';
 
 
@@ -34,11 +35,12 @@ async function createServer(){
         app.post('/login',login);
         app.post('/tradeStock',verifyToken,tradeStock);
         app.get('/portfolio',verifyToken,getPortfolio);
-        app.get('/searchStock',searchStock);
+        app.post('/searchStock',searchStock);
         app.get('/tradingHistory',verifyToken,tradingHistory);
-        app.post('/getPrice',getStockPrice)
-        app.get('/playerPortfolio',verifyToken,playerPortfolio)
-
+        app.post('/getPrice',getStockPrice);
+        app.get('/playerPortfolio',verifyToken,playerPortfolio);
+        app.post('/editWatchlist',verifyToken,editWatchlist);
+        app.get('/getWatchlist',verifyToken,getWatchlist);
         app.listen(port, () => {
             console.log('Example app listening at http://localhost:'+port)
         })

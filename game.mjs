@@ -188,8 +188,8 @@ export async function playerPortfolio(req,res){
     for (let i of playerPort) {
         let symbol = i.symbol;
         let currRate = await getPrice(symbol);
-        let currValue = currRate * i.quantity; // Remove unnecessary await
-
+        let currValue = currRate * i.quantity;
+        
         // Set properties dynamically based on the loop iteration
         i["currRate"] = currRate;
         i["currValue"] = currValue;

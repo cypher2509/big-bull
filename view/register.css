@@ -6,6 +6,7 @@ body{
 }
 
 #bigBull{
+    font-family: "Pacifico", cursive;
     font-weight: 700;
     font-size: 50px;
     padding: 20px;
@@ -13,22 +14,22 @@ body{
 }
 
 #img{
-    background-image: url("login.png");
+    background-image: url("register.png");
     background-size: cover;
-    background-color: #1a261e;
+    background-color: #35434a;
     width: 50%;
     height: 100vh;
     margin: 0;
 }
 #info{
-    background-color:#73808c ;
+    background-color:#35434a ;
     width: 50vw;
     display: flex;
     justify-content: center;
-    align-content: center;
+    align-items: baseline;
 }
 #container{
-    background-color:#dde6ec;
+    background-color:#c3d1d5;
     width: 26rem;
     height: 40rem;
     position: relative;

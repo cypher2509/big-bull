@@ -3,6 +3,28 @@ updateLeaderBoard()
 updateHistory()
 function updateHome(){
     $.ajax({
+        url: '/getWatchlist',
+        type: 'GET',
+        contentType : 'application/json',
+        success : function(response){
+            console.log(response.wlist);
+            let tableData='';
+            for(let i of response.wlist){
+                tableData +=` <tr>
+                <div class="watchlist-item" ><button class="stock-btns"><div><img class="logo" src ="../../logos/${i.symbol}.png">  ${i.symbol}</div><div>${i.price}</div></button><span><button class="delete-stock-btn"><i class="fa-solid fa-trash"></i></button></span></div>
+              </tr>`;
+            }
+            document.getElementById("wl-body").innerHTML = tableData;
+
+        },
+        error: function(xhr, status, error){
+            $("#register-out").text(xhr.responseJSON);
+            // var errorMessage = xhr.status + ': ' + xhr.statusText
+            // alert('Error - ' + errorMessage);
+            console.log(xhr.responseJSON)
+        }
+    })
+    $.ajax({
         url: '/playerPortfolio',
         type: 'GET',
         contentType: 'application/json',
@@ -19,13 +41,14 @@ function updateHome(){
             }
             for(let i of response[0].portfolio){
                 portfolioValue += i.currValue;
-                tableData +=` <tr>
-                <td>${i.symbol}</td>
+                tableData +=` <tr role="button"> 
+                <td><img class="logo" src ="../../logos/${i.symbol}.png"> ${i.symbol}</td>
                 <td>${parseFloat(i.avgPrice).toFixed(2)}</td>
                 <td>${parseFloat(i.quantity).toFixed(2)}</td>
                 <td>${parseFloat(i.currRate).toFixed(2)}</td>
                 <td>${parseFloat(i.currValue).toFixed(2)}</td>
                 <td>${i.pl}</td>
+                </button>
               </tr>`;
             }
             $("#value-tab").text("$"+portfolioValue.toFixed(2));
@@ -142,6 +165,7 @@ $(document).ready(function(){
         changeDivComponents($(this).text());
     });
 //inputs
+
     $("#stockSymbol").focusout(function(){
         let stockSymbol = {}
         stockSymbol.symbol = $('#stockSymbol').val();
@@ -167,7 +191,8 @@ $(document).ready(function(){
         });
     })
 
-    $("#stockQuantity").focusout(function(){
+    const quantity = document.getElementById("stockQuantity")
+    quantity.addEventListener( "input", (e)=>{
         let quantity = $('#stockQuantity').val()
         if(Number.isInteger(parseInt(quantity))){
             var node = document.getElementById('stockCost');
@@ -179,6 +204,38 @@ $(document).ready(function(){
         else{
             console.log("not working"+ quantity)
         }
+    })
+
+    const searchBar = document.getElementById("searchbar");
+    searchBar.addEventListener("focusout",(e)=>{
+        document.getElementById("search-results").innerHTML = "";
+        searchBar.value="";
+    })
+    searchBar.addEventListener( "input", (e)=>{
+        let stockName = $("#searchbar").val()
+        let searchStock ={};
+        searchStock.search = stockName;
+        $.ajax({
+            url:'searchStock',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(searchStock),
+            success: function(response){
+                var searchItems= "";
+                console.log(JSON.stringify(response.message));
+                if(response.message!="emptySearch"){
+                    for(i of response){
+                        searchItems += `
+                        <button class= "search-result-component "><img class="logo" src ="../../logos/${i.ticker}.png"> ${i["company name"]}</button>`
+                    }
+                    document.getElementById("search-results").innerHTML = searchItems;
+    
+                };
+                
+                
+            }
+
+        })
     })
 //trade
     function trade(trade){

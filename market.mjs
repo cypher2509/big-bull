@@ -3,10 +3,13 @@ import exp from "constants";
 const get = axios.get;
 let key = "daadbeb4409041009b67662fe5c505f7"
 let url = "https://api.twelvedata.com/";
-   
+import { getStockData} from './db.mjs';
 
-export async function searchStock(req,res){
-    let stockName = req.query.stockName;
+let database = await getStockData();
+
+
+export async function searchStockTicker(req,res){
+    let stockName = req.body.stockName;
     let route= "symbol_search";
     let response;
 
@@ -36,6 +39,37 @@ export async function searchStock(req,res){
      await name
      res.status(200).json(name)
 }
+
+// function capitalizeFirstletter(string){
+//     string = string.trim();
+//     let words = string.split(" ");
+//     let onlyFirstLetterCapital = "";
+//     for(let i of words){
+//         let word = i[0].toUpperCase() + i.slice(1).toLowerCase();
+//         onlyFirstLetterCapital += " "+word 
+//     }
+//     return onlyFirstLetterCapital.trim();
+// }
+export async function searchStock(req,res){
+    let stockName = req.body.search;
+    
+    if(stockName.trim().length==0){
+        console.log("empty");
+        return res.status(200).json({message: "emptySearch"});
+    }
+    var regex_name = new RegExp("^" + stockName.toLowerCase().trim(), "i");
+    let stock = await database.find({
+        $or:[
+            {ticker:{ $regex: regex_name,} },
+            {"company name":{ $regex: regex_name }} 
+            ]}).toArray();
+
+    if(stock.length==0){
+        return res.status(400).json("no stock found.");
+    }
+
+    return res.json(stock).status(200);
+}
   
 export async function getPrice(stockName){
     try{
@@ -47,6 +81,8 @@ export async function getPrice(stockName){
         console.log(err)
     }
 }
+
+
 
 export async function getStockPrice(req,res){
     let stockName = req.body.symbol;

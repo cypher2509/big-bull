@@ -88,6 +88,7 @@ let startingCash = await parseInt(gameSettings[0].startingCash);
     loginDetails.portfolioValue =0;
     loginDetails.portfolio = [];
     loginDetails.tradingHistory =[];
+    loginDetails.watchlist = [];
 
 
     await db.insertOne(loginDetails);

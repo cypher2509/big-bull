@@ -1,25 +1,42 @@
 body{
     font-family: "Dosis", sans-serif;
-    background-image: url("login.png");
     background-size: cover;
     display: flex;
-    justify-content: center;
-    align-items: flex-end;
 }
 
+#image{
+    background-image: url("login.png");
+    background-size: cover;
+    background-color: #1a261e;
+    width: 50%;
+    height: 100vh;
+    margin: 0;
+}
 #bigBull{
-    padding: 40px;
+    font-family: "Pacifico", cursive;
+    font-weight: 700;
+    font-size: 50px;
+    padding: 20px;
     text-align: center;
 }
+#info{
+    background-color:#73808c ;
+    width: 50vw;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+}
 #container{
-    background-color: #d3d9c3;
+    background-color: #dde6ec;
     height: 600px;
     width: 500px;
     position: relative;
     top: 100px;
     border:solid 5px;
-    border-color: #576e55;
+    border-color: #313542;
     border-radius: 10px;
+    box-shadow: 0 0 50px black;
+
 }
 
 form{
@@ -33,15 +50,19 @@ form{
 input{
     border-radius: 0.6rem;
     transition: 0.4s;
+    transition: 0.4s;
+    margin: 10px;
+    font-size: 20px;
 }
 input:focus{
     font-size: 24px;
-    box-shadow: 4px 4px 4px black;
+    box-shadow: 0px 4px 4px black;
+    border: none;
 }
 #login-btn{
-    background-color: #85917b;
+    background-color: #9dacb3;
     color: #1a261e;
-    border: solid 2px #576e55;
+    border: solid 2px #9dacb3;
     border-radius: 0.6rem;
     font-size: 20px;
     transition: 0.5s;
@@ -50,6 +71,7 @@ input:focus{
     background-color: white;
     color: #223e27;
 }
+
 
 #register-btn{
     padding-top: 30px;

@@ -21,6 +21,14 @@ export async function getDb(){
     db = await client.db('Bigbull');
     return db
 }
+
+export async function getStockData(){
+    await client.connect()
+    let database = await client.db('logos')
+    db = database.collection("stocks");
+    return db
+
+}
 export async function closeDBConnection(){
     await client.close();
     return 'Connection closed';
