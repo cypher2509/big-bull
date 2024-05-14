@@ -24,7 +24,7 @@ export async function getDb(){
 
 export async function getStockData(){
     await client.connect()
-    let database = await client.db('logos')
+    let database = await client.db('market')
     db = database.collection("stocks");
     return db
 

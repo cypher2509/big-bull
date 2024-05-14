@@ -6,7 +6,7 @@ import { register,login } from "./registation.mjs";
 import { connectToDb, getDb } from './db.mjs'
 import { newGame, provideCash, getPortfolio,declareWinner } from './gameServer.mjs'
 import { tradeStock,tradingHistory, playerPortfolio } from './game.mjs';
-import { getStockPrice, searchStock } from './market.mjs';
+import { getStockPrice, searchStock,getFundamentals } from './market.mjs';
 import {editWatchlist, getWatchlist} from './watchlist.mjs';
 import { verifyToken } from './middleware/authMiddleware.mjs';
 
@@ -41,9 +41,11 @@ async function createServer(){
         app.get('/playerPortfolio',verifyToken,playerPortfolio);
         app.post('/editWatchlist',verifyToken,editWatchlist);
         app.get('/getWatchlist',verifyToken,getWatchlist);
+        app.post('/getFundamentals',getFundamentals);
         app.listen(port, () => {
             console.log('Example app listening at http://localhost:'+port)
         })
+
     }
     catch(err){
         console.log(err)

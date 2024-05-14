@@ -73,19 +73,6 @@
         </div>
           
       </div>
-      <div id="trading">
-        <input class="trade-input" type="text" id="stockSymbol" placeholder="Enter Stock Symbol">
-        <div class="trade-info" id="stockCost"></div>
-        <input class="trade-input" type="text" id="stockQuantity" placeholder="Quantity" disabled>
-        <textbox class="trade-info" id="amount"></textbox>
-        <div class="balance"></div>
-        <div>
-          <button class="trade-btn" id="sell-btn">Sell</button>
-          <button class="trade-btn" id="buy-btn">Buy</button>
-        </div>
-       
-        <div class="trade-info" id="tradeAccomplished"></div>
-     </div>
       
       <div id="history">
         <h3>Trading history</h3>
@@ -120,7 +107,64 @@
 <!-- trade body     -->
 
     <div id="trade-tab" class="tabcontent">
+      <div class="container">
+      <div class="accountInfo">
+        <div id="stockInfo">
+          <div style="display: flex; align-items: center;">
+            <img id="stockLogo"src="./logos/TSLA.png">
+            <div>
+              <div id="stockTicker">TSLA</div>
+              <div id="stockName">Tesla Inc.</div>
+            </div>
+          </div>
+          <button id="watchlist-btn"><i class="fa-regular fa-star"></i></button>
+        </div>
+        <hr id="line-break">
+        <div id="stock-price">$6000</div>
+        <div id="change">down 0.23999(-0.16097%) past day</div>
 
+      <h3 id="market-details" style="color: white; text-align:left; margin-left:1rem; padding: none;">Market Details</h3>
+      <div id="fundamentals">
+        <div id="row-1">
+          <div class="data-rows"><div>Open</div><div id="open">148.44000"</div></div>
+          <div class="data-rows"><div>High</div><div id="high"> "148.96840"</div></div>
+          <div class="data-rows"><div>Low</div><div id="low">"147.22099"</div></div>
+          <div class="data-rows"><div>Close</div><div id="close">"148.85001"</div></div>
+          <div class="data-rows"><div>Previous close</div><div id="change"> "149.09000" </div> </div>
+          <div class="data-rows"><div>Volume</div><div id="volume"> "67903927",</div> </div>
+          <div class="data-rows"><div>Average Volume</div><div id="average_volume"> "-0.1609</div></div>
+          
+
+        </div>
+        <div id="row-2">
+          <div class="data-rows"><div>52 week low</div><div id="52low">"103.10000"</div></div>
+          <div class="data-rows"><div>52 week high</div><div id="52high">"157.25999"</div></div>
+          <div class="data-rows"><div>52 week low change</div><div id="52low_change">"45.75001",</div></div>
+          <div class="data-rows"><div>52 week high change</div><div id="52high_change"> "-8.40999",</div></div>
+          <div class="data-rows"><div>52 week range</div> <div id="52range">103.099998 - 157.259995</div></div>
+          
+          
+          
+         
+        </div>
+      </div>
+      </div>
+
+
+      <div id="trading">
+        <div class="trade-input" type="text" id="stockSymbol"></div>
+        <div class="trade-info" id="stockCost">Stock price</div>
+        <input class="trade-input" type="text" id="stockQuantity" placeholder="Quantity" >
+        <textbox class="trade-info" id="amount">amount</textbox>
+        <div class="balance"></div>
+        <div>
+          <button class="trade-btn" id="sell-btn">Sell</button>
+          <button class="trade-btn" id="buy-btn">Buy</button>
+        </div>
+       
+        <div class="trade-info" id="tradeAccomplished"></div>
+     </div>
+    </div>
     </div>
 
 

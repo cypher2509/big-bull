@@ -40,16 +40,6 @@ export async function searchStockTicker(req,res){
      res.status(200).json(name)
 }
 
-// function capitalizeFirstletter(string){
-//     string = string.trim();
-//     let words = string.split(" ");
-//     let onlyFirstLetterCapital = "";
-//     for(let i of words){
-//         let word = i[0].toUpperCase() + i.slice(1).toLowerCase();
-//         onlyFirstLetterCapital += " "+word 
-//     }
-//     return onlyFirstLetterCapital.trim();
-// }
 export async function searchStock(req,res){
     let stockName = req.body.search;
     
@@ -82,15 +72,12 @@ export async function getPrice(stockName){
     }
 }
 
-
-
 export async function getStockPrice(req,res){
     let stockName = req.body.symbol;
     console.log(stockName)
     try{
         let route= "price";
         let response = await get(url+route+"?symbol="+stockName+"&apikey="+key);
-        console.log(response.data.price)
         return res.status(200).json(response.data.price)
     }
     catch(err){
@@ -105,5 +92,18 @@ export async function isValidSymbol(symbol){
         return false;
     } else {
         return true;
+    }
+}
+
+export async function getFundamentals(req,res){
+    let ticker = req.body.symbol;
+    try{
+        let route= "quote";
+        let response = await get(url+route+"?symbol="+ticker+"&apikey="+key);
+        console.log(response.data);
+        return res.status(200).json(response.data)
+    }
+    catch(err){
+        console.log(err)
     }
 }

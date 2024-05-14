@@ -1,7 +1,10 @@
+
+var buttons;
 updateHome()
 updateLeaderBoard()
 updateHistory()
 function updateHome(){
+    console.log("updating")
     $.ajax({
         url: '/getWatchlist',
         type: 'GET',
@@ -11,10 +14,11 @@ function updateHome(){
             let tableData='';
             for(let i of response.wlist){
                 tableData +=` <tr>
-                <div class="watchlist-item" ><button class="stock-btns"><div><img class="logo" src ="../../logos/${i.symbol}.png">  ${i.symbol}</div><div>${i.price}</div></button><span><button class="delete-stock-btn"><i class="fa-solid fa-trash"></i></button></span></div>
+                <div class="watchlist-item" ><button class="dataLink watchlist-stock-btn"><div><img class="logo" src ="../../logos/${i.symbol}.png">  ${i.symbol}</div><div>${i.price}</div></button></div>
               </tr>`;
             }
             document.getElementById("wl-body").innerHTML = tableData;
+            classActionListener();
 
         },
         error: function(xhr, status, error){
@@ -41,19 +45,22 @@ function updateHome(){
             }
             for(let i of response[0].portfolio){
                 portfolioValue += i.currValue;
-                tableData +=` <tr role="button"> 
-                <td><img class="logo" src ="../../logos/${i.symbol}.png"> ${i.symbol}</td>
+                tableData +=` <tr >
+                <td><button class="dataLink portfolio-dataLink"><img class="logo" src ="../../logos/${i.symbol}.png"> ${i.symbol}</button></td>
                 <td>${parseFloat(i.avgPrice).toFixed(2)}</td>
                 <td>${parseFloat(i.quantity).toFixed(2)}</td>
                 <td>${parseFloat(i.currRate).toFixed(2)}</td>
                 <td>${parseFloat(i.currValue).toFixed(2)}</td>
                 <td>${i.pl}</td>
-                </button>
+                
               </tr>`;
             }
+
             $("#value-tab").text("$"+portfolioValue.toFixed(2));
             $(".balance").text("Balance: $"+response[0].balance);
             document.getElementById("table-body").innerHTML = tableData;
+            classActionListener();
+
         },        
         //We can use the alert box to show if there's an error in the server-side
         error: function(xhr, status, error){
@@ -163,33 +170,8 @@ $(document).ready(function(){
 
     $(".tablinks").click(function(){
         changeDivComponents($(this).text());
-    });
-//inputs
 
-    $("#stockSymbol").focusout(function(){
-        let stockSymbol = {}
-        stockSymbol.symbol = $('#stockSymbol').val();
-        $.ajax({
-            url: '/getPrice',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(stockSymbol),
-            success: function(response){
-                // We can print in the front-end console to verify
-                // what is coming back from the server side
-                console.log(JSON.stringify(response));
-                $("#stockCost").text("Current_Stock_price: "+response);
-                document.getElementById("stockQuantity").disabled =false;
-            },        
-            //We can use the alert box to show if there's an error in the server-side
-            error: function(xhr, status, error){
-                var errorMessage = xhr.status + ': ' + xhr.statusText
-                document.getElementById("stockQuantity").disabled =true;
-                $("#stockCost").text("");
-                console.log("error ::"+ error)
-            }
-        });
-    })
+    });
 
     const quantity = document.getElementById("stockQuantity")
     quantity.addEventListener( "input", (e)=>{
@@ -202,85 +184,285 @@ $(document).ready(function(){
             $("#amount").text("Amount: "+amount);
         }
         else{
-            console.log("not working"+ quantity)
+            console.log("not work ing"+ quantity)
         }
     })
 
     const searchBar = document.getElementById("searchbar");
     searchBar.addEventListener("focusout",(e)=>{
-        document.getElementById("search-results").innerHTML = "";
-        searchBar.value="";
+        setTimeout(clearContent,300)        
     })
+
+    const watchlist= document.getElementById("watchlist-btn");
+    watchlist.addEventListener("click",(e)=>{
+        let stockData ={};
+        if(watchlist.getElementsByClassName("fa-regular fa-star").length==1){
+            watchlist.innerHTML = "";
+            watchlist.innerHTML= `<i class="fa-solid fa-star">`
+            stockData.symbol = $("#stockTicker").text();
+            stockData.action ="add";
+            console.log($("#stockTicker").text())
+            console.log("wathclist added")
+            
+        }
+        // (watchlist.getElementsByClassName("fa-solid fa-star").length==1){
+        else{
+            watchlist.innerHTML = "";
+            watchlist.innerHTML= `<i class="fa-regular fa-star">`
+            stockData.symbol = $("#stockTicker").text();
+            stockData.action ="remove";
+            console.log("removed")
+        }
+        editWatchlist(stockData);
+
+        updateHome();
+
+    })  
+
     searchBar.addEventListener( "input", (e)=>{
         let stockName = $("#searchbar").val()
-        let searchStock ={};
-        searchStock.search = stockName;
-        $.ajax({
-            url:'searchStock',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(searchStock),
-            success: function(response){
-                var searchItems= "";
-                console.log(JSON.stringify(response.message));
-                if(response.message!="emptySearch"){
-                    for(i of response){
-                        searchItems += `
-                        <button class= "search-result-component "><img class="logo" src ="../../logos/${i.ticker}.png"> ${i["company name"]}</button>`
-                    }
-                    document.getElementById("search-results").innerHTML = searchItems;
-    
-                };
+        if(stockName.length>1){
+            let searchStock ={};
+            searchStock.search = stockName;
+            $.ajax({
+                url:'searchStock',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(searchStock),
+                success: function(response){
+                    var searchItems= "";
+                    if(response.message!="emptySearch"){
+                        for(i of response){
+                            try{
+                                searchItems += `
+                            <button class= "dataLink search-result-component "><div><img class="logo" src ="../../logos/${i.ticker}.png"> ${i.ticker}</div> ${i["company name"]}</button>`
                 
-                
-            }
+                            }
+                            catch{
 
-        })
+                            }
+                        }
+                        document.getElementById("search-results").innerHTML = searchItems;
+                        buttons = document.querySelectorAll('.dataLink');
+                        for(let button of buttons){
+                            console.log(button)
+                            button.addEventListener('click', (e)=>{
+                                let x=0
+                                console.log("clicked")
+                                console.log(e.target)
+                                if (e.target.classList.contains("dataLink")) {
+                                    console.log("responded")
+                                    x++;
+                                    let stockName = e.target.textContent;
+                                    let stockTicker = stockName.split(" ");
+                                    stockTicker = stockTicker[1];
+                                    let stockData = {}
+                                    stockData.symbol = stockTicker;
+                                    getPrice(stockData);
+                                    getFundamentals(stockData);
+                                    $(".tabcontent").each(function(index){
+                                        let this_id = $(this).attr('id');
+                                        if (this_id.includes("trade")){
+                                            $(this).show();
+                                        }
+                                        else{
+                                            $(this).hide();
+                                        }            
+                                    });
+                                }
+                                
+                            });
+                        };
+
+                    };  
+                    
+                } 
+            })
+        }
+        
     })
-//trade
-    function trade(trade){
-        $.ajax({
-            url: '/tradeStock',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(trade),
-            success: function(response){
-
-                $("#tradeAccomplished").text(trade.call+ " "+ trade.quantity+" "+trade.symbol )
-                console.log(JSON.stringify(response));
-                updateHome();
-                updateLeaderBoard();
-                updateHistory();
-            },        
-            //We can use the alert box to show if there's an error in the server-side
-            error: function(xhr, status, error){
-                var errorMessage = xhr.status + ': ' + xhr.statusText
-                console.log(xhr.responseJSON)
-                $("#tradeAccomplished").text(xhr.responseJSON)
-            }
-
-        });
-    }
+   
     $("#buy-btn").click(function(){
         let tradeInfo= {};
-        tradeInfo.symbol = $("#stockSymbol").val()
+        tradeInfo.symbol = $("#stockTicker").text()
+
         tradeInfo.quantity = parseInt($("#stockQuantity").val())
         tradeInfo.call ="buy";
+        console.log(tradeInfo)
         trade(tradeInfo);
         
     });
     $("#sell-btn").click(function(){
         let tradeInfo = {};
         tradeInfo.call = "sell";
-        tradeInfo.symbol = $("#stockSymbol").val()
+        tradeInfo.symbol = $("#stockTicker").text()
         tradeInfo.quantity = parseInt($("#stockQuantity").val())
         trade(tradeInfo);
 
     });
 
-    
 });
 
+function editWatchlist(stockData){
+    $.ajax({
+        url: '/editWatchlist',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(stockData),
+        success: function(response){
+            updateHome();
+        },        
+        //We can use the alert box to show if there's an error in the server-side
+        error: function(xhr, status, error){
+            var errorMessage = xhr.status + ': ' + xhr.statusText
+        }
+
+    })
+
+}
+
+function trade(trade){
+    $.ajax({
+        url: '/tradeStock',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(trade),
+        success: function(response){
+
+            $("#tradeAccomplished").text(trade.call+ " "+ trade.quantity+" "+trade.symbol )
+            console.log(JSON.stringify(response));
+            updateHome();
+            updateLeaderBoard();
+            updateHistory();
+        },        
+        //We can use the alert box to show if there's an error in the server-side
+        error: function(xhr, status, error){
+            var errorMessage = xhr.status + ': ' + xhr.statusText
+            console.log(xhr.responseJSON)
+            $("#tradeAccomplished").text(xhr.responseJSON)
+        }
+
+    });
+}
+
+function classActionListener(){
+            console.log("function running");
+            buttons = document.querySelectorAll('.dataLink');
+            for(let button of buttons){
+                console.log(button)
+                button.addEventListener('click', (e)=>{
+                    let x=0
+                    console.log("clicked")
+                    console.log(e.target)
+                    if (e.target.classList.contains("dataLink")) {
+                        console.log("responded")
+                        x++;
+                        let stockName = e.target.textContent;
+                        let stockTicker = stockName.split(" ");
+                        stockTicker = stockTicker[1];
+                        let stockData = {}
+                        stockData.symbol = stockTicker;
+                        getPrice(stockData);
+                        getFundamentals(stockData);
+                        $(".tabcontent").each(function(index){
+                            let this_id = $(this).attr('id');
+                            if (this_id.includes("trade")){
+                                $(this).show();
+                            }
+                            else{
+                                $(this).hide();
+                            }            
+                        });
+                    }
+                    
+                });
+            };
+}
+
+function getPrice(stockData){
+    $.ajax({
+        url: '/getPrice',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(stockData),
+        success: function(response){
+            console.log("response "+response)
+            $("#stock-price").text("$"+ response);
+            $("#stockCost").text("$ "+ response);
+
+        },        
+        error: function(xhr, status, error){
+            var errorMessage = xhr.status + ': ' + xhr.statusText
+            console.log(errorMessage);
+        }
+    });
+}
+
+ function getFundamentals(stockData){
+     $.ajax({
+        url: '/getFundamentals',
+        type: 'POST',
+        data: JSON.stringify(stockData),
+        contentType: 'application/json',
+        success: function(response){
+            console.log(response);
+            $("#stockLogo").attr("src",`./logos/${response.symbol}.png`);
+            $("#stockTicker").text(response.symbol);
+            $("#stockSymbol").text(response.symbol)
+            $("#stockName").text(response.name);
+            
+            checkWatchlist(response.symbol)
+           
+            if(response.change>0){
+                $("#change").css("color","green").text("up $"+ response.change+"("+response.percent_change+"%) past day");
+            }
+            else{
+                $("#change").css("color","red").text("down $"+ ((-1)*response.change)+"("+(-1)*response.percent_change+"%) past day");
+            }
+            
+            
+        },        
+        //We can use the alert box to show if there's an error in the server-side
+        error: function(xhr, status, error){
+            $("#register-out").text(xhr.responseJSON);
+            // var errorMessage = xhr.status + ': ' + xhr.statusText
+            // alert('Error - ' + errorMessage);
+            console.log(xhr.responseJSON)
+        }
+    });
+}
+
+function clearContent(){
+    document.getElementById("search-results").innerHTML = "";
+    $("#searchBar").value="";
+}
 
 
+
+ function checkWatchlist(ticker){
+     $.ajax({
+        url: '/getWatchlist',
+        type: 'get',
+        contentType: 'application/json',
+        success: function(response){
+            console.log(response.wlist);  
+            for(i of response.wlist){
+                console.log("comparing"+i.symbol + ticker)
+                if(i.symbol == ticker){
+                    document.getElementById("watchlist-btn").innerHTML = `<i class="fa-solid fa-star">`
+                }
+                else{
+                    document.getElementById("watchlist-btn").innerHTML = `<i class="fa-regular fa-star">`
+                }
+            }   
+        },        
+        //We can use the alert box to show if there's an error in the server-side
+        error: function(xhr, status, error){
+            $("#register-out").text(xhr.responseJSON);
+            // var errorMessage = xhr.status + ': ' + xhr.statusText
+            // alert('Error - ' + errorMessage);
+            console.log(xhr.responseJSON)
+        }
+    });
+}
 
