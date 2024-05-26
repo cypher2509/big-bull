@@ -96,9 +96,6 @@ let startingCash = await parseInt(gameSettings[0].startingCash);
     const token = jwt.sign({ userName: userName , gameId: gameId}, 'bullrun',{expiresIn: '1h'});
     res.cookie("token", token);
     return res.status(200).json({ token :token , message : 'Account created.'});
-
- 
-
 }
 
 export async function login(req,res){
@@ -134,6 +131,8 @@ export async function login(req,res){
         return res.status(400).json("Invalid password.")
 
     }
-    
+}
 
+export async function logout(req,res){
+    return res.clearCookie("token").json("cookies cleared");
 }

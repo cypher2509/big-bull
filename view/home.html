@@ -20,11 +20,13 @@
     <div class="nav">
         <div id="nav-btns">
             <button class="tablinks">Home</button>
-            <button class="tablinks" >Trade</button>
+            <button class="tablinks" id="trade-nav-btn" >Trade</button>
+            <button class="tablinks">Trading-History</button>
             <button class="tablinks">Leaderboard</button>
             <input id="searchbar" type="text" data-search placeholder="Search name or symbol">
         </div>
-        <div class="tablinks" id="username"></div>
+        <div id="left-nav"><div class="tablinks" id="username"></div><button id="logout">logout</button></div>
+
     </div>
     
     <div id="search-results">
@@ -36,7 +38,7 @@
         <div id="value-tab">$6000</div>
         <span id="text1">Available to trade:<span>
         <span class="balance" id="balance-tab">$5000</span>
-        <table class="table table-dark">
+        <table class="table table-dark" style="margin-top:2rem;">
           <thead>
                 <tr>
                   <th scope="col" >Symbol</th>
@@ -73,18 +75,31 @@
         </div>
           
       </div>
+
+      <div id="news-container">
+        <h3 id="news">News</h3>
+        <div id="articles">
+        </div>
+      </div>
       
+     
+    <!-- </div> -->
+    
+  </div>
+  
+<!-- trade body     -->
+    <div id="trading-history-tab" class="tabcontent">
       <div id="history">
         <h3>Trading history</h3>
         <hr style="margin:1rem 10px 0 10px;">
-        <table class="table table-dark">
+        <table class="table table-dark" style="margin: 2rem;width: 90vw;">
           <thead><tr>
             <th scope="col">Call</th>
             <th scope="col">Symbol</th>
             <th scope="col">Rate</th>
             <th scope="col">Quantity</th>
             <th scope="col">Cost</th>
-            <th scope="col">Time</th>
+            <th scope="col" style="width: 216px;">Time</th>
           </tr></thead>
           <tbody id="history-table">
             <tr>
@@ -99,13 +114,8 @@
           </tbody>
                 
               </table>
-            </div>
-    <!-- </div> -->
-    
-  </div>
-  
-<!-- trade body     -->
-
+      </div>
+    </div>
     <div id="trade-tab" class="tabcontent">
       <div class="container">
       <div class="accountInfo">
@@ -113,11 +123,11 @@
           <div style="display: flex; align-items: center;">
             <img id="stockLogo"src="./logos/TSLA.png">
             <div>
-              <div id="stockTicker">TSLA</div>
-              <div id="stockName">Tesla Inc.</div>
+              <div id="stockTicker"></div>
+              <div id="stockName"></div>
             </div>
           </div>
-          <button id="watchlist-btn"><i class="fa-regular fa-star"></i></button>
+          <button id="watchlist-btn"></button>
         </div>
         <hr id="line-break">
         <div id="stock-price">$6000</div>
@@ -130,9 +140,8 @@
           <div class="data-rows"><div>High</div><div id="high"> "148.96840"</div></div>
           <div class="data-rows"><div>Low</div><div id="low">"147.22099"</div></div>
           <div class="data-rows"><div>Close</div><div id="close">"148.85001"</div></div>
-          <div class="data-rows"><div>Previous close</div><div id="change"> "149.09000" </div> </div>
+          <div class="data-rows"><div>Previous close</div><div id="previous_close"></div></div>
           <div class="data-rows"><div>Volume</div><div id="volume"> "67903927",</div> </div>
-          <div class="data-rows"><div>Average Volume</div><div id="average_volume"> "-0.1609</div></div>
           
 
         </div>
@@ -141,11 +150,8 @@
           <div class="data-rows"><div>52 week high</div><div id="52high">"157.25999"</div></div>
           <div class="data-rows"><div>52 week low change</div><div id="52low_change">"45.75001",</div></div>
           <div class="data-rows"><div>52 week high change</div><div id="52high_change"> "-8.40999",</div></div>
-          <div class="data-rows"><div>52 week range</div> <div id="52range">103.099998 - 157.259995</div></div>
-          
-          
-          
-         
+          <div class="data-rows"><div>52 week range</div> <div id="52range">103.099998 - 157.259995</div></div>     
+          <div class="data-rows"><div>Average Volume</div><div id="average_volume"> "-0.1609</div></div>
         </div>
       </div>
       </div>
@@ -164,13 +170,20 @@
        
         <div class="trade-info" id="tradeAccomplished"></div>
      </div>
+     <div id="news-container">
+      <h3 id="news">News</h3>
+      <div id="stock-articles">
+      </div>
+    </div>
     </div>
     </div>
 
 
     <div id="leaderboard-tab" class="tabcontent">
       <div id="leaderboard">
-        <table class="table">
+        <h3>Leaderboard</h3>
+        <hr style="margin:1rem 10px 0 10px; width: 90vw;">
+        <table  class="table table-dark" style="margin:2rem; width: 90vw;">
           <thead>
             <tr>
               <th scope="col">Rank</th>

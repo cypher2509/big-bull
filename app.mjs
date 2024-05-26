@@ -2,15 +2,14 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cookieParser from "cookie-parser";
 
-import { register,login } from "./registation.mjs";
+import { register,login, logout } from "./registation.mjs";
 import { connectToDb, getDb } from './db.mjs'
 import { newGame, provideCash, getPortfolio,declareWinner } from './gameServer.mjs'
 import { tradeStock,tradingHistory, playerPortfolio } from './game.mjs';
 import { getStockPrice, searchStock,getFundamentals } from './market.mjs';
 import {editWatchlist, getWatchlist} from './watchlist.mjs';
 import { verifyToken } from './middleware/authMiddleware.mjs';
-
-
+import { getGeneralNews, getStockNews } from './news.mjs';
 
 const app= express();
 const port = 8820;
@@ -42,6 +41,9 @@ async function createServer(){
         app.post('/editWatchlist',verifyToken,editWatchlist);
         app.get('/getWatchlist',verifyToken,getWatchlist);
         app.post('/getFundamentals',getFundamentals);
+        app.get('/getGeneralNews',getGeneralNews);
+        app.post('/getStockNews',getStockNews);
+        app.get('/logout',logout);
         app.listen(port, () => {
             console.log('Example app listening at http://localhost:'+port)
         })

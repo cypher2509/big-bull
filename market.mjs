@@ -1,5 +1,4 @@
 import axios from "axios";
-import exp from "constants";
 const get = axios.get;
 let key = "daadbeb4409041009b67662fe5c505f7"
 let url = "https://api.twelvedata.com/";
@@ -65,7 +64,7 @@ export async function getPrice(stockName){
     try{
         let route= "price";
         let response = await get(url+route+"?symbol="+stockName+"&apikey="+key);
-        return await response.data.price
+        return await response.data.price;
     }
     catch(err){
         console.log(err)

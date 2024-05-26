@@ -26,7 +26,7 @@ export async function editWatchlist(req,res){
         if(watchlist.length >0){
             for(let i of watchlist){
                 if(symbol == i){
-                    res.status(400).json({message:"stock already added to the watchlist."});
+                    res.status(404).json({message:"stock already added to the watchlist."});
                     return
                 }
             }
