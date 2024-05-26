@@ -1,20 +1,19 @@
 
 var buttons;
+getGeneralNews()
 updateHome()
 updateLeaderBoard()
 updateHistory()
 function updateHome(){
-    console.log("updating")
     $.ajax({
         url: '/getWatchlist',
         type: 'GET',
         contentType : 'application/json',
         success : function(response){
-            console.log(response.wlist);
             let tableData='';
             for(let i of response.wlist){
                 tableData +=` <tr>
-                <div class="watchlist-item" ><button class="dataLink watchlist-stock-btn"><div><img class="logo" src ="../../logos/${i.symbol}.png">  ${i.symbol}</div><div>${i.price}</div></button></div>
+                <div class="watchlist-item" ><button class="dataLink watchlist-stock-btn"><div class="stock-details"><img class="logo" src ="../../logos/${i.symbol}.png">  ${i.symbol}</div><div>Price: ${parseFloat(i.price).toFixed(2) }</div></button></div>
               </tr>`;
             }
             document.getElementById("wl-body").innerHTML = tableData;
@@ -23,8 +22,6 @@ function updateHome(){
         },
         error: function(xhr, status, error){
             $("#register-out").text(xhr.responseJSON);
-            // var errorMessage = xhr.status + ': ' + xhr.statusText
-            // alert('Error - ' + errorMessage);
             console.log(xhr.responseJSON)
         }
     })
@@ -34,7 +31,6 @@ function updateHome(){
         contentType: 'application/json',
 
         success: function(response){
-            console.log(response[0].portfolio)
             $("#username").text(response[0].userName);
 
             let tableData='';
@@ -57,7 +53,7 @@ function updateHome(){
             }
 
             $("#value-tab").text("$"+portfolioValue.toFixed(2));
-            $(".balance").text("Balance: $"+response[0].balance);
+            $(".balance").text("Balance: $"+response[0].balance.toFixed(2));
             document.getElementById("table-body").innerHTML = tableData;
             classActionListener();
 
@@ -73,6 +69,79 @@ function updateHome(){
     
     
 }
+function getStockNews(stock){
+    document.getElementById("stock-articles").innerHTML = "";
+    $.ajax({
+        url:'/getStockNews',
+        type:'POST',
+        data: JSON.stringify(stock),
+        contentType: 'application/json',
+        success: function(response){
+            let articles = '';
+            let a = 0;
+            for(let i of response){
+                let tStamp = i.publishedAt.split('T');
+                let date = tStamp[0];
+
+                let x =
+                `<div id="article-card">
+                    <img id="article-pic" src=${i.urlToImage} >
+                    <div>
+                        <a href= ${i.url}>
+                            <h5 id="headline">${i.title}</h5>
+                        </a>
+                        <br>
+                        <div><p id="article-date">${date}</p></div>
+                    </div>
+                </div>`
+                articles += x;
+                a++
+                if(a>10){
+                    break;
+                }
+            }
+            document.getElementById("stock-articles").innerHTML = "";
+
+            document.getElementById("stock-articles").innerHTML = articles;
+
+        }
+    })
+}
+
+function getGeneralNews(){
+    $.ajax({
+        url:'/getGeneralNews',
+        type:'GET',
+        contentType: 'application/json',
+        success: function(response){
+            let articles = '';
+            let a = 0;
+            for(let i of response){
+                let tStamp = i.publishedAt.split('T');
+                let date = tStamp[0];
+
+                let x =
+                `<div id="article-card">
+                    <img id="article-pic" src=${i.urlToImage} >
+                    <div>
+                        <a href= ${i.url}>
+                            <h5 id="headline">${i.title}</h5>
+                        </a>
+                        <br>
+                        <div><p id="article-date">${date}</p></div>
+                    </div>
+                </div>`
+                articles += x;
+                a++
+                if(a>10){
+                    break;
+                }
+            }
+            document.getElementById("articles").innerHTML = articles;
+
+        }
+    })
+}
 function updateHistory(){
     $.ajax({
         url:"/tradingHistory",
@@ -80,7 +149,6 @@ function updateHistory(){
         contentType: 'application/json',
         success: function(response){
             arr = response;
-            console.log(arr)
             
             let tableData='';
             for(let i of arr){
@@ -88,7 +156,6 @@ function updateHistory(){
                 let date = time[0]
                 let preciseTime = time[1].split(".")
                 preciseTime = preciseTime[0];
-                console.log(date,preciseTime);
 
                 tableData +=` <tr>
                 <td>${i.call}</td>
@@ -118,7 +185,6 @@ function updateLeaderBoard(){
         contentType: 'application/json',
         success: function(response){
             arr = response;
-            console.log(arr)
             // We can print in the front-end console to verify
             // what is coming back from the server side
             for (let i = 0; i < arr.length; i++) {
@@ -133,7 +199,6 @@ function updateLeaderBoard(){
                   ;[arr[i], arr[highest]] = [arr[highest], arr[i]]
                 }
               }
-            console.log(arr)
             let tableData='';
             let rank = 1
             for(let i of arr){
@@ -168,6 +233,24 @@ $(document).ready(function(){
         });
     }
 
+    $('#logout').click(function(){
+        $.ajax({
+            url: '/logout',
+            type: 'GET',
+            contentType: 'application/json',
+            success: function(response){            
+                window.location.href = "index.html";
+            },        
+            //We can use the alert box to show if there's an error in the server-side
+            error: function(xhr, status, error){
+                $("#register-out").text(xhr.responseJSON);
+                // var errorMessage = xhr.status + ': ' + xhr.statusText
+                // alert('Error - ' + errorMessage);
+                console.log(xhr.responseJSON)
+            }
+        });
+    });
+
     $(".tablinks").click(function(){
         changeDivComponents($(this).text());
 
@@ -184,7 +267,7 @@ $(document).ready(function(){
             $("#amount").text("Amount: "+amount);
         }
         else{
-            console.log("not work ing"+ quantity)
+            console.log("not working"+ quantity)
         }
     })
 
@@ -201,8 +284,6 @@ $(document).ready(function(){
             watchlist.innerHTML= `<i class="fa-solid fa-star">`
             stockData.symbol = $("#stockTicker").text();
             stockData.action ="add";
-            console.log($("#stockTicker").text())
-            console.log("wathclist added")
             
         }
         // (watchlist.getElementsByClassName("fa-solid fa-star").length==1){
@@ -211,7 +292,6 @@ $(document).ready(function(){
             watchlist.innerHTML= `<i class="fa-regular fa-star">`
             stockData.symbol = $("#stockTicker").text();
             stockData.action ="remove";
-            console.log("removed")
         }
         editWatchlist(stockData);
 
@@ -245,20 +325,18 @@ $(document).ready(function(){
                         document.getElementById("search-results").innerHTML = searchItems;
                         buttons = document.querySelectorAll('.dataLink');
                         for(let button of buttons){
-                            console.log(button)
                             button.addEventListener('click', (e)=>{
                                 let x=0
-                                console.log("clicked")
-                                console.log(e.target)
                                 if (e.target.classList.contains("dataLink")) {
-                                    console.log("responded")
                                     x++;
                                     let stockName = e.target.textContent;
                                     let stockTicker = stockName.split(" ");
                                     stockTicker = stockTicker[1];
                                     let stockData = {}
                                     stockData.symbol = stockTicker;
+                                    stockData.name = stockName;
                                     getPrice(stockData);
+                                    getStockNews(stockData);
                                     getFundamentals(stockData);
                                     $(".tabcontent").each(function(index){
                                         let this_id = $(this).attr('id');
@@ -288,7 +366,6 @@ $(document).ready(function(){
 
         tradeInfo.quantity = parseInt($("#stockQuantity").val())
         tradeInfo.call ="buy";
-        console.log(tradeInfo)
         trade(tradeInfo);
         
     });
@@ -330,7 +407,6 @@ function trade(trade){
         success: function(response){
 
             $("#tradeAccomplished").text(trade.call+ " "+ trade.quantity+" "+trade.symbol )
-            console.log(JSON.stringify(response));
             updateHome();
             updateLeaderBoard();
             updateHistory();
@@ -346,24 +422,27 @@ function trade(trade){
 }
 
 function classActionListener(){
-            console.log("function running");
             buttons = document.querySelectorAll('.dataLink');
             for(let button of buttons){
-                console.log(button)
                 button.addEventListener('click', (e)=>{
                     let x=0
-                    console.log("clicked")
-                    console.log(e.target)
                     if (e.target.classList.contains("dataLink")) {
-                        console.log("responded")
                         x++;
                         let stockName = e.target.textContent;
                         let stockTicker = stockName.split(" ");
                         stockTicker = stockTicker[1];
+                        if(button.classList.contains("watchlist-stock-btn")){
+                            stockTicker = stockName.split('Price: ');
+                            stockTicker = stockTicker[0].trim();
+                            console.log("stock ticker from watchlist button: "+stockName+ stockTicker);
+                        }
+                        stockName = stockTicker;
                         let stockData = {}
                         stockData.symbol = stockTicker;
+                        stockData.name = stockName;
+                        console.log(stockData);
                         getPrice(stockData);
-                        getFundamentals(stockData);
+                        getFundamentals(stockData);                        
                         $(".tabcontent").each(function(index){
                             let this_id = $(this).attr('id');
                             if (this_id.includes("trade")){
@@ -386,7 +465,6 @@ function getPrice(stockData){
         contentType: 'application/json',
         data: JSON.stringify(stockData),
         success: function(response){
-            console.log("response "+response)
             $("#stock-price").text("$"+ response);
             $("#stockCost").text("$ "+ response);
 
@@ -398,20 +476,41 @@ function getPrice(stockData){
     });
 }
 
- function getFundamentals(stockData){
+async function getFundamentals(stockData){
      $.ajax({
         url: '/getFundamentals',
         type: 'POST',
         data: JSON.stringify(stockData),
         contentType: 'application/json',
         success: function(response){
-            console.log(response);
             $("#stockLogo").attr("src",`./logos/${response.symbol}.png`);
             $("#stockTicker").text(response.symbol);
             $("#stockSymbol").text(response.symbol)
             $("#stockName").text(response.name);
+            $("#stockName").text(response.name);
+            $("#open").text(parseFloat(response.open).toFixed(2));
+            $("#high").text(parseFloat(response.high).toFixed(2));
+            $("#low").text(parseFloat(response.low).toFixed(2));            
+            $("#close").text(parseFloat(response.close).toFixed(2));
+            $("#previous_close").text(parseFloat(response.previous_close).toFixed(2));
+            $("#volume").text(parseFloat(response.volume).toFixed(2));
+            $("#average_volume").text(parseFloat(response.average_volume).toFixed(2));
             
-            checkWatchlist(response.symbol)
+            $("#52low").text(parseFloat(response.fifty_two_week.low))
+            $("#52high").text(parseFloat(response.fifty_two_week.high))
+            $("#52low_change").text(parseFloat(response.fifty_two_week.low_change))
+            $("#52high_change").text(parseFloat(response.fifty_two_week.high_change))
+            $("#52range").text(parseFloat(response.fifty_two_week.range))
+
+
+            let stockData = {}
+            stockData.name = response.name
+
+            getStockNews(stockData);
+
+            console.log("checking in watchlist: "+ response.symbol);
+            
+            checkWatchlist(response.symbol);
            
             if(response.change>0){
                 $("#change").css("color","green").text("up $"+ response.change+"("+response.percent_change+"%) past day");
@@ -445,11 +544,11 @@ function clearContent(){
         type: 'get',
         contentType: 'application/json',
         success: function(response){
-            console.log(response.wlist);  
             for(i of response.wlist){
-                console.log("comparing"+i.symbol + ticker)
                 if(i.symbol == ticker){
                     document.getElementById("watchlist-btn").innerHTML = `<i class="fa-solid fa-star">`
+                    break;
+                    
                 }
                 else{
                     document.getElementById("watchlist-btn").innerHTML = `<i class="fa-regular fa-star">`
