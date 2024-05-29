@@ -78,12 +78,12 @@ export async function getWatchlist(req,res){
             listItem.price =await getPrice(i);
             wlist.push(listItem);
         }
+        return res.status(200).json({wlist});
     }
     else{
-        return res.status(400).json({message:"empty watchlist"})
+        return res.status(200).json({wlist});
     }
-   
-    return res.status(200).json({wlist});
+    
 
 
 }

@@ -280,7 +280,6 @@ $(document).ready(function(){
     watchlist.addEventListener("click",(e)=>{
         let stockData ={};
         if(watchlist.getElementsByClassName("fa-regular fa-star").length==1){
-            watchlist.innerHTML = "";
             watchlist.innerHTML= `<i class="fa-solid fa-star">`
             stockData.symbol = $("#stockTicker").text();
             stockData.action ="add";
@@ -288,7 +287,6 @@ $(document).ready(function(){
         }
         // (watchlist.getElementsByClassName("fa-solid fa-star").length==1){
         else{
-            watchlist.innerHTML = "";
             watchlist.innerHTML= `<i class="fa-regular fa-star">`
             stockData.symbol = $("#stockTicker").text();
             stockData.action ="remove";
@@ -544,13 +542,19 @@ function clearContent(){
         type: 'get',
         contentType: 'application/json',
         success: function(response){
+            if(response.wlist.length==0){
+                document.getElementById("watchlist-btn").innerHTML = `<i class="fa-regular fa-star">`
+            }
             for(i of response.wlist){
                 if(i.symbol == ticker){
+                    console.log("is in watchlist.")
                     document.getElementById("watchlist-btn").innerHTML = `<i class="fa-solid fa-star">`
                     break;
                     
                 }
                 else{
+                    console.log("is not in watchlist.")
+
                     document.getElementById("watchlist-btn").innerHTML = `<i class="fa-regular fa-star">`
                 }
             }   
