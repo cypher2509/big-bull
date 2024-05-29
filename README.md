@@ -12,8 +12,7 @@ to go back to the main page to access the admin controls.
 
 database that will be used for this app is named as "Bigbull" and the collection's name would be the gameId entered when creating the game using admin controls.
 
-Due to api call limit just two trades will be possible in a minute.
-css is applied to all the webpages but it's not super clean due to lack of time. Only the login-page has the best css by my side and it's also made responsive.
+There are only 55 api calls made per minute for this web application. 
 
 Below are the descriptions of the API endpoints along with the corresponding unit tests:
 
@@ -22,6 +21,7 @@ Below are the descriptions of the API endpoints along with the corresponding uni
 #### API Endpoints:
 1. **POST /register**: Registers a new user and provides a Web Token.
 2. **GET /login**: Logs in an existing user and provides a Web Token.
+3. **GET/logout**: Deletes the cookies and expires the Web Token for the account. 
 
 #### Unit Tests:
 - **Register Tests**: Tests for registering new users with various scenarios such as valid registration, invalid gameId, missing parameters, invalid parameter formats, and existing username.
@@ -41,6 +41,11 @@ Below are the descriptions of the API endpoints along with the corresponding uni
 - **Portfolio Tests**: Tests for retrieving and updating player portfolios with valid gameId.
 - **Declare Winner Tests**: Tests for declaring winners with scenarios including valid and invalid gameId.
 
+### Watchlist:
+
+1. **POST/ editWatchlist**: Add/remove stock from the watchlist.
+2. **GET/ getWatchlist**: Retrieves player's watchlist
+
 ### Stock Trading:
 
 #### API Endpoints:
@@ -55,6 +60,8 @@ Below are the descriptions of the API endpoints along with the corresponding uni
 
 #### API Endpoints:
 1. **GET /searchStock**: Searches for stocks based on a given stock name.
+2. **GET /generalNews**: Gets the trending and latest stock market related news.
+3. **POST /getStockNews**: Gets the trending and latest news related to a stock.
 
 #### Unit Tests:
 - **Search Stock Tests**: Tests for searching stocks with scenarios including valid and invalid stock names.
