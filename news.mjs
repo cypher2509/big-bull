@@ -1,7 +1,7 @@
 import axios from "axios";
 import { url } from "inspector";
 let get = axios.get
-let key = "201850af5c6e434e99979e2db7916a97"
+//let key = "please enter your api key from newsapi.org here."
 
 let date = new Date()
 date.setDate(date.getDate() - 5);
