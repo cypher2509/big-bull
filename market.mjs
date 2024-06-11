@@ -1,6 +1,6 @@
 import axios from "axios";
 const get = axios.get;
-let key = "daadbeb4409041009b67662fe5c505f7"
+// let key = "please enter your api key from twelvedata here."
 let url = "https://api.twelvedata.com/";
 import { getStockData} from './db.mjs';
 
