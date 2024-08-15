@@ -1,5 +1,5 @@
 ## A repository for CS3100 term project
-link for the demo video: https://drive.google.com/drive/folders/1D4dZg2tINpWvHKrPGfWkkBN-R33Uu7Oz?usp=drive_link
+link for the demo video: https://www.linkedin.com/posts/lvp2509_hi-connections-i-am-excited-to-present-activity-7202902860148228098-g13f?utm_source=share&utm_medium=member_desktop
 
 to run the game follow these steps:
 step 1: create a database named "Bigbull"
