@@ -1,6 +1,10 @@
 ## A repository for CS3100 term project
 link for the demo video: https://www.linkedin.com/posts/lvp2509_hi-connections-i-am-excited-to-present-activity-7202902860148228098-g13f?utm_source=share&utm_medium=member_desktop
 
+<img width="1451" alt="Screenshot 2024-08-15 at 12 30 04 AM" src="https://github.com/user-attachments/assets/21ec73e4-b4b2-49de-b6d1-31f232e1cdf7">
+<img width="1470" alt="Screenshot 2024-08-15 at 12 29 29 AM" src="https://github.com/user-attachments/assets/cf7b84b0-7cef-499d-bc5a-4fe43d5a88d9">
+
+
 to run the game follow these steps:
 step 1: create a database named "Bigbull"
 step 2: run the file "app.mjs"
