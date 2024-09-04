@@ -170,6 +170,10 @@ i{
     display: none;
 }
 
+.trade{
+    border-radius: 0.5rem;
+}
+
 .trade-btn{
     width: 5rem;
     margin: 5px;

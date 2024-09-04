@@ -26,24 +26,33 @@ app.use(bodyParser.json()); // support json encoded bodies
 async function createServer(){
     try{
         await connectToDb();
-        //registration
-        app.post('/newGame',newGame)
-        app.post('/provideCash',provideCash);
-        app.post('/declareWinner',declareWinner);
+        //user authentication
+        app.post('/newGame',newGame);
         app.post('/register',register);
         app.post('/login',login);
-        app.post('/tradeStock',verifyToken,tradeStock);
-        app.get('/portfolio',verifyToken,getPortfolio);
-        app.post('/searchStock',searchStock);
-        app.get('/tradingHistory',verifyToken,tradingHistory);
-        app.post('/getPrice',getStockPrice);
-        app.get('/playerPortfolio',verifyToken,playerPortfolio);
-        app.post('/editWatchlist',verifyToken,editWatchlist);
-        app.get('/getWatchlist',verifyToken,getWatchlist);
-        app.post('/getFundamentals',getFundamentals);
-        app.get('/getGeneralNews',getGeneralNews);
-        app.post('/getStockNews',getStockNews);
         app.get('/logout',logout);
+
+        //account actions
+        app.patch('/tradeStock',verifyToken,tradeStock);
+        app.patch('/editWatchlist',verifyToken,editWatchlist);
+
+        //account details
+        app.get('/portfolio',verifyToken,getPortfolio);
+        app.get('/tradingHistory',verifyToken,tradingHistory);
+        app.get('/playerPortfolio',verifyToken,playerPortfolio);
+        app.get('/watchlist',verifyToken,getWatchlist);
+
+        //stock & news details
+        app.get('/stock/:ticker',searchStock);
+        app.get('/stockPrice/:symbol',getStockPrice);
+        app.get('/fundamentals/:symbol',getFundamentals);
+        app.get('/generalNews/',getGeneralNews);
+        app.get('/stockNews/:name',getStockNews);
+
+        // admin controls
+        app.patch('/provideCash',provideCash);
+        app.post('/winner',declareWinner);
+
         app.listen(port, () => {
             console.log('Example app listening at http://localhost:'+port)
         })

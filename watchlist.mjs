@@ -9,6 +9,7 @@ export async function editWatchlist(req,res){
     let symbol = req.body.symbol;
     let action = req.body.action;
 
+    console.log(symbol,action)
     let token = req.cookies.token;
     if(!token){
         token =await req.headers.authorization;

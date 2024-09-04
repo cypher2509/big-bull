@@ -19,7 +19,7 @@ function createGame(game){
 function provideCash(game){
     $.ajax({
         url:"/provideCash",
-        type:"POST",
+        type:"PATCH",
         data:JSON.stringify(game),
         contentType: 'application/json',
         success: function(response){
@@ -33,10 +33,10 @@ function provideCash(game){
 }
 function declare(game){
     $.ajax({
-        url:"/declareWinner",
+        url:"/winner",
         type:"POST",
-        data:JSON.stringify(game),
         contentType: 'application/json',
+        data:JSON.stringify(game),
         success: function(response){
             $("#winner").text(response.userName);
             console.log(response.data)

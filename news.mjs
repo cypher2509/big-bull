@@ -1,7 +1,7 @@
 import axios from "axios";
 import { url } from "inspector";
 let get = axios.get
-//let key = "please enter your api key from newsapi.org here."
+let key = "" //enter your api from newsapi.org here!
 
 let date = new Date()
 date.setDate(date.getDate() - 5);
@@ -22,10 +22,16 @@ export async function getGeneralNews(req,res){
 }
 
 export async function getStockNews(req,res){
-    let stock = req.body.name;
+    let stock = req.params.name;
+    console.log
     stock = stock;
-
     console.log("searched :  "+stock)
-    let articles=  await getNews(stock);
-    return res.json(articles).status(200);
+    try{    
+        let articles=  await getNews(stock);
+        return res.json(articles).status(200);
+    }  
+    catch(err){
+        console.log(err);
+    }
+    
 }

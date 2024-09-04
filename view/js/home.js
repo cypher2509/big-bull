@@ -6,7 +6,7 @@ updateLeaderBoard()
 updateHistory()
 function updateHome(){
     $.ajax({
-        url: '/getWatchlist',
+        url: '/watchlist',
         type: 'GET',
         contentType : 'application/json',
         success : function(response){
@@ -69,14 +69,15 @@ function updateHome(){
     
     
 }
-function getStockNews(stock){
+function getStockNews(name){
+    console.log('stock news called rn!!!!!!!!');
     document.getElementById("stock-articles").innerHTML = "";
     $.ajax({
-        url:'/getStockNews',
-        type:'POST',
-        data: JSON.stringify(stock),
+        url:'/stockNews/'+ name,
+        type:'GET',
         contentType: 'application/json',
         success: function(response){
+            console.log(response);
             let articles = '';
             let a = 0;
             for(let i of response){
@@ -104,13 +105,16 @@ function getStockNews(stock){
 
             document.getElementById("stock-articles").innerHTML = articles;
 
+        },
+        error: function(xhr, status, error){
+            console.log(xhr.responseJSON)
         }
     })
 }
 
 function getGeneralNews(){
     $.ajax({
-        url:'/getGeneralNews',
+        url:'/generalNews',
         type:'GET',
         contentType: 'application/json',
         success: function(response){
@@ -303,10 +307,9 @@ $(document).ready(function(){
             let searchStock ={};
             searchStock.search = stockName;
             $.ajax({
-                url:'searchStock',
-                type: 'POST',
+                url:'stock/'+ stockName,
+                type: 'GET',
                 contentType: 'application/json',
-                data: JSON.stringify(searchStock),
                 success: function(response){
                     var searchItems= "";
                     if(response.message!="emptySearch"){
@@ -324,7 +327,7 @@ $(document).ready(function(){
                         buttons = document.querySelectorAll('.dataLink');
                         for(let button of buttons){
                             button.addEventListener('click', (e)=>{
-                                let x=0
+                                let x=0;
                                 if (e.target.classList.contains("dataLink")) {
                                     x++;
                                     let stockName = e.target.textContent;
@@ -333,9 +336,10 @@ $(document).ready(function(){
                                     let stockData = {}
                                     stockData.symbol = stockTicker;
                                     stockData.name = stockName;
-                                    getPrice(stockData);
-                                    getStockNews(stockData);
-                                    getFundamentals(stockData);
+                                    console.log("stock name from datalink"+stockName)
+                                    getPrice(stockTicker);
+                                    getStockNews(stockName);
+                                    getFundamentals(stockTicker);
                                     $(".tabcontent").each(function(index){
                                         let this_id = $(this).attr('id');
                                         if (this_id.includes("trade")){
@@ -381,7 +385,7 @@ $(document).ready(function(){
 function editWatchlist(stockData){
     $.ajax({
         url: '/editWatchlist',
-        type: 'POST',
+        type: 'PATCH',
         contentType: 'application/json',
         data: JSON.stringify(stockData),
         success: function(response){
@@ -399,7 +403,7 @@ function editWatchlist(stockData){
 function trade(trade){
     $.ajax({
         url: '/tradeStock',
-        type: 'POST',
+        type: 'PATCH',
         contentType: 'application/json',
         data: JSON.stringify(trade),
         success: function(response){
@@ -427,6 +431,7 @@ function classActionListener(){
                     if (e.target.classList.contains("dataLink")) {
                         x++;
                         let stockName = e.target.textContent;
+                        console.log("stockname from datalink:  "+stockName);
                         let stockTicker = stockName.split(" ");
                         stockTicker = stockTicker[1];
                         if(button.classList.contains("watchlist-stock-btn")){
@@ -438,9 +443,11 @@ function classActionListener(){
                         let stockData = {}
                         stockData.symbol = stockTicker;
                         stockData.name = stockName;
-                        console.log(stockData);
-                        getPrice(stockData);
-                        getFundamentals(stockData);                        
+    
+                        getPrice(stockTicker);
+                        getFundamentals(stockTicker);    
+                        getStockNews(stockName);
+                        
                         $(".tabcontent").each(function(index){
                             let this_id = $(this).attr('id');
                             if (this_id.includes("trade")){
@@ -456,16 +463,14 @@ function classActionListener(){
             };
 }
 
-function getPrice(stockData){
+function getPrice(symbol){
     $.ajax({
-        url: '/getPrice',
-        type: 'POST',
+        url: '/stockPrice/'+ symbol,
+        type: 'GET',
         contentType: 'application/json',
-        data: JSON.stringify(stockData),
         success: function(response){
             $("#stock-price").text("$"+ response);
             $("#stockCost").text("$ "+ response);
-
         },        
         error: function(xhr, status, error){
             var errorMessage = xhr.status + ': ' + xhr.statusText
@@ -474,11 +479,10 @@ function getPrice(stockData){
     });
 }
 
-async function getFundamentals(stockData){
+async function getFundamentals(symbol){
      $.ajax({
-        url: '/getFundamentals',
-        type: 'POST',
-        data: JSON.stringify(stockData),
+        url: '/fundamentals/'+ symbol,
+        type: 'GET',
         contentType: 'application/json',
         success: function(response){
             $("#stockLogo").attr("src",`./logos/${response.symbol}.png`);
@@ -504,7 +508,7 @@ async function getFundamentals(stockData){
             let stockData = {}
             stockData.name = response.name
 
-            getStockNews(stockData);
+            getStockNews(response.name);
 
             console.log("checking in watchlist: "+ response.symbol);
             
@@ -538,7 +542,7 @@ function clearContent(){
 
  function checkWatchlist(ticker){
      $.ajax({
-        url: '/getWatchlist',
+        url: '/watchlist',
         type: 'get',
         contentType: 'application/json',
         success: function(response){

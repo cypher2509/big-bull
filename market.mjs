@@ -1,6 +1,6 @@
 import axios from "axios";
 const get = axios.get;
-// let key = "please enter your api key from twelvedata here."
+let key = ""//enter your api key from twelvedata api.;
 let url = "https://api.twelvedata.com/";
 import { getStockData} from './db.mjs';
 
@@ -40,7 +40,7 @@ export async function searchStockTicker(req,res){
 }
 
 export async function searchStock(req,res){
-    let stockName = req.body.search;
+    let stockName = req.params.ticker;
     
     if(stockName.trim().length==0){
         console.log("empty");
@@ -72,8 +72,8 @@ export async function getPrice(stockName){
 }
 
 export async function getStockPrice(req,res){
-    let stockName = req.body.symbol;
-    console.log(stockName)
+    let stockName = req.params.symbol;
+    console.log(stockName);
     try{
         let route= "price";
         let response = await get(url+route+"?symbol="+stockName+"&apikey="+key);
@@ -95,7 +95,7 @@ export async function isValidSymbol(symbol){
 }
 
 export async function getFundamentals(req,res){
-    let ticker = req.body.symbol;
+    let ticker = req.params.symbol;
     try{
         let route= "quote";
         let response = await get(url+route+"?symbol="+ticker+"&apikey="+key);
